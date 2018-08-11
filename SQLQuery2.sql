@@ -8,6 +8,12 @@ go
 select * from books
 go
 
+select * from Sales
+go
+
+select * from Shops
+go
+
 insert into Sales values
 ( 11 , (select NameBook from books where id_book = 11 ), '2018-07-10',(select price from books where id_book = 11), 1 ,6),
 ( 11 , (select NameBook from books where id_book = 11 ), '2018-07-10',(select price from books where id_book = 11), 1 ,6),
@@ -19,6 +25,10 @@ insert into Books values
 	( 'Супер Программирование',6, 14 , 1000.20,	'no pic',  '2018-02-05', 500 ),
 	( 'Супер Программирование 2',6, 14 , 780.20,	'no pic',  '2018-02-05', 250 )
 
+insert into Sales values
+	(14, (select NameBook from Books where ID_BOOK = 14), '2018-07-10', (select price from Books where ID_BOOK = 14), 1, 5),
+	(15, (select NameBook from Books where ID_BOOK = 15), '2018-07-10', (select price from Books where ID_BOOK = 15), 1, 6)
+go
 ------------ LessOn 1 --------------
 create view Autors_From (A_FirstName, A_LastName, NameCountry)
 as
@@ -86,7 +96,17 @@ select * from AuthorsAB
 go
 ------------ CoMpleCt --------------
 
------------- LessOn 6 --------------
+------------ LessOn 6 --------------(здесь я зделал на оборот, вывел все магазины которые продают книги моего издательства, сорян, не знаю как зделать на оборот)
+create view MyShops
+as
 select Shops.NameShop from Shops
 where
-Shops.ID_SHOP <> any (select Sales.ID_SHOP from Sales)
+Shops.ID_SHOP = any (select Shops.ID_SHOP from Shops, Sales, Books, Authors
+					  where Shops.ID_SHOP = Sales.ID_SHOP and
+					  Sales.ID_BOOK = Books.ID_BOOK and
+					  Books.ID_AUTHOR = Authors.ID_AUTHOR and
+					  Authors.ID_AUTHOR = 14)
+
+select * from MyShops
+go
+------------ CoMpleCt --------------
